@@ -19,17 +19,21 @@ Assume you're using `Ubuntu`, fire your favourite terminal and type as follows:
 
 Clone this repository:
 
-`git clone https://github.com/cyanmoon/MiniGameServer.git`
+`git clone https://github.com/swpd/MiniGameServer.git`
 
-Switch to `node` branch:
+Change to directory:
 
-`git checkout node`
+`cd MiniGameServer`
 
 Run the server:
 
 `node server.js`
 
 Everything is ready, enjoy~
+
+## Configuration
+
+Configuration is done by editing `lib/config.js`, each item is self-explaination.
 
 ## Protocol
 
@@ -47,12 +51,14 @@ A simple protocol is used to exchanged data between clients and server:
 
 ```
 {
-    uid    : 42,
-    pawnid : 1,
-    name   : 'leo',
-    x      : 123.4,
-    y      : 25.6,
-    growth : 10
+    'uid'    : 42,
+    'pawnId' : 1,
+    'name'   : 'leo',
+    'x'      : 123.4,
+    'y'      : 25.6,
+    'growth' : 2.5,
+    'isDead' : false,
+    'error'  : 0
 }
 ```
 
@@ -62,3 +68,4 @@ A simple protocol is used to exchanged data between clients and server:
 * 2: logout
 * 3: update
 * 4: dead
+* 5: reborn
