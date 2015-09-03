@@ -1,0 +1,8 @@
+{
+    "name"         : "server",
+    "version"      : "1.0.0",
+    "dependencies" : {
+        "log4js"  : "0.6.26",
+        "buffers" : "0.1.1"
+    }
+}
