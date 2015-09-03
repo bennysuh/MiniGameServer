@@ -15,7 +15,7 @@ Install Node.js:
 
 Assume you're using `Ubuntu`, fire your favourite terminal and type as follows:
 
-`sudo apt-get install nodejs`
+`sudo apt-get install nodejs npm`
 
 Clone this repository:
 
@@ -25,9 +25,13 @@ Change to directory:
 
 `cd MiniGameServer`
 
+Install necessary dependencies:
+
+`npm install`
+
 Run the server:
 
-`node server.js`
+`nodejs server.js`
 
 Everything is ready, enjoy~
 
