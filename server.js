@@ -73,13 +73,13 @@ var server = net.createServer(function(socket) {
     });
 
     client.on('close', function() {
-        logger.info('client [' + client.addr + '] closed');
+        logger.info('client ' + client.addr + ' closed');
         pawns.remove(client.name);
         clients.remove(client.id);
     });
 
     client.on('error', function(err) {
-        logger.error('close client [' + client.addr + '] due to error\n' + err.stack);
+        logger.error('close client ' + client.addr + ' due to error\n' + err.stack);
         pawns.remove(client.name);
         clients.remove(client.id);
     });
