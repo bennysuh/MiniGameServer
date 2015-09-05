@@ -6,16 +6,12 @@ function printPawns(pawn) {
     console.log(JSON.stringify(pawn));
 }
 
-pawns.add('jack');
+pawns.update({'name' : 'jack', 'uid' : 1, 'pawnid' : 0, 'type' : 1});
 pawns.iter(printPawns);
-pawns.add('rose');
-pawns.add('tom');
+pawns.update({'name' : 'rose', 'uid' : 1, 'pawnid' : 1, 'type' : 0});
+pawns.update({'name' : 'tom', 'uid' : 3, 'pawnid' : 0, 'type' : 2});
+pawns.iter(printPawns);
+pawns.orphanByUid(1);
 pawns.iter(printPawns);
 
-console.log(pawns.has('jack'));
-console.log(pawns.has('jerry'));
-
-console.log(JSON.stringify(pawns.get('rose')));
-
-pawns.remove('jack');
-pawns.iter(printPawns);
+console.log(pawns.toString());
