@@ -19,21 +19,22 @@ function getRandom(min, max) {
 
 var server = net.createServer(function(socket) {
     var client = new Client(socket);
-    logger.info('client ' + client.addr + ' connected');
+    logger.info(client.addr + ' client connected');
 
     client.on('request', function(cmd, body) {
-        logger.info('request from client ' + client.addr +
-                ' cmd: ' + cmd + ', body: ' + JSON.stringify(body));
+        logger.info(client.addr + ' request from client ' + ' cmd: ' + cmd +
+                ', body: ' + JSON.stringify(body));
         if (cmd == Command.LOGIN) {
             if (typeof body.name != 'undefined') {
                 if (clients.hasName(body.name)) {
                     logger.info(client.addr + ' duplicate username detected: ' + body.name);
-                    var duplicateError = {
+                    var duplicateError = JSON.stringify({
                         'error' : Error.DUPLICATE_USERNAME
-                    };
-                    logger.trace(JSON.stringify(duplicateError));
-                    client.sendResponse(
-                            Client.toBuffer(cmd, JSON.stringify(duplicateError)));
+                    });
+                    logger.trace(client.addr + ' login response:')
+                    logger.trace('cmd: ' + cmd + ', body length: ' +
+                            duplicateError.length + ', body: ' + duplicateError);
+                    client.sendResponse(Client.toBuffer(cmd, duplicateError));
                 } else {
                     // new player successfully added
                     client.name = body.name;
@@ -41,14 +42,16 @@ var server = net.createServer(function(socket) {
                     clients.add(client);
                     logger.info(client.addr + ' successfully login, uid: ' + client.uid);
 
-                    var loginSuccess = {
+                    var loginSuccess = JSON.stringify({
                         'error' : Error.OK,
                         'x'     : getRandom(sceneSize.horizonal.min, sceneSize.horizonal.max),
                         'y'     : getRandom(sceneSize.vertical.min, sceneSize.vertical.max),
                         'uid'   : client.uid
-                    };
-                    logger.trace(JSON.stringify(loginSuccess));
-                    client.sendResponse(Client.toBuffer(cmd, JSON.stringify(loginSuccess)));
+                    });
+                    logger.trace(client.addr + ' login response:')
+                    logger.trace('cmd: ' + cmd + ', body length: ' +
+                            loginSuccess.length + ', body: ' + loginSuccess);
+                    client.sendResponse(Client.toBuffer(cmd, loginSuccess));
                 }
             }
         } else if (cmd == Command.LOGOUT) {
@@ -63,13 +66,9 @@ var server = net.createServer(function(socket) {
         } else if (cmd == Command.UPDATE) {
             if (client.isLogin) {
                 if (Array.isArray(body)) {
-                    if (body.length == 1) {
-                        // pawn is not split
-                        pawns.update(body[0]);
-                    } else if (body.length > 1) {
-                        // pawn is split
-                        for (var jsonObj in body) {
-                            pawns.update(jsonObj);
+                    if (body.length >= 1) {
+                        for (var idx in body) {
+                            pawns.update(body[idx]);
                         }
                     } else {
                         logger.error(client.addr + ' invalid update array size: ' +
@@ -89,12 +88,12 @@ var server = net.createServer(function(socket) {
                 logger.error(client.addr + ' invalid dead before login');
             }
         } else {
-            logger.error('unknown command code: ' + cmd + ' from client' + client.addr);
+            logger.error(client.addr + ' receive unknown command code: ' + cmd);
         }
     });
 
     client.on('close', function() {
-        logger.info('client ' + client.addr + ' closed');
+        logger.info(client.addr + ' client closed');
         if (client.isLogin) {
             pawns.orphanByUid(client.uid);
             clients.remove(client);
@@ -102,7 +101,7 @@ var server = net.createServer(function(socket) {
     });
 
     client.on('error', function(err) {
-        logger.error('close client ' + client.addr + ' due to error\n' + err.stack);
+        logger.error(client.addr + 'close client due to error\n' + err.stack);
         if (client.isLogin) {
             pawns.orphanByUid(client.uid);
             clients.remove(client);
@@ -111,20 +110,21 @@ var server = net.createServer(function(socket) {
 });
 
 server.on('error', function(err) {
-    logger.fatal('killing minigame server due to error\n' + err.stack);
+    logger.fatal('[server] killing minigame server due to error\n' + err.stack);
     process.exit(1);
 });
 
 // start server
-logger.info('starting minigame server at: ' +
+logger.info('[server] starting minigame server at: ' +
         config.addr.ip + ':' + config.addr.port);
 server.listen(config.addr.port, config.addr.ip);
 
 // cron job
 setInterval(function() {
-    //logger.trace('broadcasting messages');
+    logger.trace('[server] broadcasting pawns information: ');
     var pawnsUpdate = pawns.toString();
-    logger.trace(JSON.stringify(pawnsUpdate)); 
+    logger.trace('[server] cmd: ' + Command.UPDATE + ', body length: ' + pawnsUpdate.length +
+            ', body: ' + pawnsUpdate);
     clients.iter(function (client) {
         client.sendResponse(Client.toBuffer(Command.UPDATE, pawnsUpdate));
     });
