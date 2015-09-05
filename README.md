@@ -72,4 +72,3 @@ A simple protocol is used to exchanged data between clients and server:
 * 2: logout
 * 3: update
 * 4: dead
-* 5: reborn
