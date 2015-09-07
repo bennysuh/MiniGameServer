@@ -56,13 +56,12 @@ A simple protocol is used to exchanged data between clients and server:
 ```
 {
     'uid'    : 42,
-    'pawnId' : 1,
+    'pawnid' : 1,
     'name'   : 'leo',
     'x'      : 123.4,
     'y'      : 25.6,
     'growth' : 2.5,
     'isDead' : false,
-    'error'  : 0
 }
 ```
 
