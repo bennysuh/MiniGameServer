@@ -14,4 +14,6 @@ pawns.iter(printPawns);
 pawns.orphanByUid(1);
 pawns.iter(printPawns);
 
+pawns.generateNPCs();
+
 console.log(pawns.toString());

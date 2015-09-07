@@ -5,6 +5,7 @@ var Clients = require('./lib/clients').Clients;
 var Command = require('./lib/code').Command;
 var Error = require('./lib/code').Error;
 var Pawns = require('./lib/pawns').Pawns;
+var utils = require('./lib/utils');
 var sceneSize = config.sceneSize;
 
 var logger = require('log4js').getLogger('minigame');
@@ -13,9 +14,7 @@ logger.setLevel(config.logLevel);
 var pawns = new Pawns();
 var clients = new Clients();
 
-function getRandom(min, max) {
-    return Math.random() * (max - min) + min;
-}
+//pawns.generateNPCs();
 
 var server = net.createServer(function(socket) {
     var client = new Client(socket);
@@ -44,8 +43,8 @@ var server = net.createServer(function(socket) {
 
                     var loginSuccess = JSON.stringify({
                         'error' : Error.OK,
-                        'x'     : getRandom(sceneSize.horizonal.min, sceneSize.horizonal.max),
-                        'y'     : getRandom(sceneSize.vertical.min, sceneSize.vertical.max),
+                        'x'     : utils.getRandom(sceneSize.horizonal.min, sceneSize.horizonal.max),
+                        'y'     : utils.getRandom(sceneSize.vertical.min, sceneSize.vertical.max),
                         'uid'   : client.uid
                     });
                     logger.trace(client.addr + ' login response:')
