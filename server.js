@@ -56,7 +56,8 @@ var server = net.createServer(function(socket) {
         } else if (cmd == Command.LOGOUT) {
             if (client.isLogin) {
                 if (client.isLogin) {
-                    pawns.orphanByUid(client.uid);
+                    //pawns.orphanByUid(client.uid);
+                    pawns.removeByUid(client.uid);
                     clients.remove(client);
                 }
             } else {
@@ -94,7 +95,8 @@ var server = net.createServer(function(socket) {
     client.on('close', function() {
         logger.info(client.addr + ' client closed');
         if (client.isLogin) {
-            pawns.orphanByUid(client.uid);
+            //pawns.orphanByUid(client.uid);
+            pawns.removeByUid(client.uid);
             clients.remove(client);
         }
     });
@@ -102,7 +104,8 @@ var server = net.createServer(function(socket) {
     client.on('error', function(err) {
         logger.error(client.addr + 'close client due to error\n' + err.stack);
         if (client.isLogin) {
-            pawns.orphanByUid(client.uid);
+            //pawns.orphanByUid(client.uid);
+            pawns.removeByUid(client.uid);
             clients.remove(client);
         }
     });
